@@ -1,9 +1,127 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CheckCircle, Download, Settings, MessageSquare, Zap, Shield } from "lucide-react";
+import { CheckCircle, Download, Settings, MessageSquare, Zap, Shield, X } from "lucide-react";
+import { useState, useMemo } from "react";
+
+const COMMUNITY_SETUPS = [
+  {
+    id: 1,
+    name: "Developer's Dream",
+    author: "@CodeCrusader",
+    emoji: "👨‍💻",
+    model: "Llama3",
+    platforms: ["Discord"],
+    useCase: "Development",
+    description: "Code reviews, debugging, and documentation generation",
+    testimonial: "Saves me hours on code reviews!",
+    color: "orange"
+  },
+  {
+    id: 2,
+    name: "Productivity Master",
+    author: "@TimeKeeper",
+    emoji: "⚡",
+    model: "TinyLlama",
+    platforms: ["Telegram", "Slack"],
+    useCase: "Productivity",
+    description: "Task management, meeting summaries, and scheduling",
+    testimonial: "My personal assistant that never sleeps!",
+    color: "blue"
+  },
+  {
+    id: 3,
+    name: "Content Creator",
+    author: "@CreativeFlow",
+    emoji: "✍️",
+    model: "Mistral",
+    platforms: ["WhatsApp", "Discord"],
+    useCase: "Content",
+    description: "Brainstorming, writing assistance, and content ideation",
+    testimonial: "My creative muse in my pocket!",
+    color: "purple"
+  },
+  {
+    id: 4,
+    name: "Research Assistant",
+    author: "@DataDiver",
+    emoji: "🔬",
+    model: "Llama3",
+    platforms: ["Telegram"],
+    useCase: "Research",
+    description: "Research synthesis, paper analysis, and knowledge extraction",
+    testimonial: "My research partner that knows my papers!",
+    color: "green"
+  },
+  {
+    id: 5,
+    name: "Language Tutor",
+    author: "@PolyglotPro",
+    emoji: "🌍",
+    model: "Llama3",
+    platforms: ["Discord"],
+    useCase: "Learning",
+    description: "Language practice, translation, and cultural insights",
+    testimonial: "Learning languages has never been this fun!",
+    color: "red"
+  },
+  {
+    id: 6,
+    name: "Smart Home Hub",
+    author: "@TechNinja",
+    emoji: "🏠",
+    model: "TinyLlama",
+    platforms: ["Telegram"],
+    useCase: "Automation",
+    description: "Voice control, automation routines, and device management",
+    testimonial: "My home listens only to me!",
+    color: "yellow"
+  }
+];
+
+const MODELS = ["Llama3", "TinyLlama", "Mistral"];
+const PLATFORMS = ["Discord", "Telegram", "Slack", "WhatsApp"];
+const USE_CASES = ["Development", "Productivity", "Content", "Research", "Learning", "Automation"];
+
+const COLOR_MAP = {
+  orange: { border: "border-orange-200", hover: "hover:border-orange-400", text: "text-orange-600" },
+  blue: { border: "border-blue-200", hover: "hover:border-blue-400", text: "text-blue-600" },
+  purple: { border: "border-purple-200", hover: "hover:border-purple-400", text: "text-purple-600" },
+  green: { border: "border-green-200", hover: "hover:border-green-400", text: "text-green-600" },
+  red: { border: "border-red-200", hover: "hover:border-red-400", text: "text-red-600" },
+  yellow: { border: "border-yellow-200", hover: "hover:border-yellow-400", text: "text-yellow-600" }
+};
 
 export default function Home() {
+  const [selectedModels, setSelectedModels] = useState<string[]>([]);
+  const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
+  const [selectedUseCases, setSelectedUseCases] = useState<string[]>([]);
+
+  const filteredSetups = useMemo(() => {
+    return COMMUNITY_SETUPS.filter(setup => {
+      const modelMatch = selectedModels.length === 0 || selectedModels.includes(setup.model);
+      const platformMatch = selectedPlatforms.length === 0 || selectedPlatforms.some(p => setup.platforms.includes(p));
+      const useCaseMatch = selectedUseCases.length === 0 || selectedUseCases.includes(setup.useCase);
+      return modelMatch && platformMatch && useCaseMatch;
+    });
+  }, [selectedModels, selectedPlatforms, selectedUseCases]);
+
+  const toggleFilter = (filter: string, type: "model" | "platform" | "useCase") => {
+    if (type === "model") {
+      setSelectedModels(prev => prev.includes(filter) ? prev.filter(f => f !== filter) : [...prev, filter]);
+    } else if (type === "platform") {
+      setSelectedPlatforms(prev => prev.includes(filter) ? prev.filter(f => f !== filter) : [...prev, filter]);
+    } else {
+      setSelectedUseCases(prev => prev.includes(filter) ? prev.filter(f => f !== filter) : [...prev, filter]);
+    }
+  };
+
+  const clearAllFilters = () => {
+    setSelectedModels([]);
+    setSelectedPlatforms([]);
+    setSelectedUseCases([]);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 via-white to-blue-50">
       {/* Navigation */}
@@ -310,7 +428,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Community Setups Section */}
+      {/* Community Setups Section with Filters */}
       <section className="py-20 px-4 bg-gradient-to-b from-white to-orange-50">
         <div className="container max-w-6xl mx-auto">
           <h2 className="text-4xl font-bold text-center mb-4 text-gray-900">
@@ -320,174 +438,137 @@ export default function Home() {
             Discover how other users have customized their Lobster Assistant. Get inspired and find the perfect setup for your needs.
           </p>
 
+          {/* Filter Section */}
+          <div className="mb-12 space-y-6">
+            {/* Model Filters */}
+            <div>
+              <h3 className="text-lg font-bold text-gray-900 mb-3">Filter by Model</h3>
+              <div className="flex flex-wrap gap-2">
+                {MODELS.map(model => (
+                  <button
+                    key={model}
+                    onClick={() => toggleFilter(model, "model")}
+                    className={`px-4 py-2 rounded-lg font-semibold transition-all ${
+                      selectedModels.includes(model)
+                        ? "bg-orange-600 text-white shadow-lg"
+                        : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                    }`}
+                  >
+                    {model}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Platform Filters */}
+            <div>
+              <h3 className="text-lg font-bold text-gray-900 mb-3">Filter by Platform</h3>
+              <div className="flex flex-wrap gap-2">
+                {PLATFORMS.map(platform => (
+                  <button
+                    key={platform}
+                    onClick={() => toggleFilter(platform, "platform")}
+                    className={`px-4 py-2 rounded-lg font-semibold transition-all ${
+                      selectedPlatforms.includes(platform)
+                        ? "bg-blue-600 text-white shadow-lg"
+                        : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                    }`}
+                  >
+                    {platform}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Use Case Filters */}
+            <div>
+              <h3 className="text-lg font-bold text-gray-900 mb-3">Filter by Use Case</h3>
+              <div className="flex flex-wrap gap-2">
+                {USE_CASES.map(useCase => (
+                  <button
+                    key={useCase}
+                    onClick={() => toggleFilter(useCase, "useCase")}
+                    className={`px-4 py-2 rounded-lg font-semibold transition-all ${
+                      selectedUseCases.includes(useCase)
+                        ? "bg-purple-600 text-white shadow-lg"
+                        : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                    }`}
+                  >
+                    {useCase}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Clear Filters Button */}
+            {(selectedModels.length > 0 || selectedPlatforms.length > 0 || selectedUseCases.length > 0) && (
+              <div className="flex items-center justify-between pt-4 border-t border-gray-300">
+                <p className="text-sm text-gray-600">
+                  Showing {filteredSetups.length} of {COMMUNITY_SETUPS.length} setups
+                </p>
+                <button
+                  onClick={clearAllFilters}
+                  className="flex items-center gap-2 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all font-semibold"
+                >
+                  <X className="w-4 h-4" />
+                  Clear All Filters
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Setups Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* Setup 1: Developer's Dream */}
-            <Card className="p-6 border-2 border-orange-200 hover:shadow-xl transition-all hover:border-orange-400 hover:scale-105">
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900">Developer's Dream</h3>
-                  <p className="text-sm text-gray-500">by @CodeCrusader</p>
-                </div>
-                <span className="text-2xl">👨‍💻</span>
+            {filteredSetups.length > 0 ? (
+              filteredSetups.map(setup => {
+                const colors = COLOR_MAP[setup.color as keyof typeof COLOR_MAP];
+                return (
+                  <Card
+                    key={setup.id}
+                    className={`p-6 border-2 ${colors.border} hover:shadow-xl transition-all ${colors.hover} hover:scale-105`}
+                  >
+                    <div className="flex items-start justify-between mb-4">
+                      <div>
+                        <h3 className="text-xl font-bold text-gray-900">{setup.name}</h3>
+                        <p className="text-sm text-gray-500">by {setup.author}</p>
+                      </div>
+                      <span className="text-2xl">{setup.emoji}</span>
+                    </div>
+                    <div className="space-y-3">
+                      <div>
+                        <p className="text-xs text-gray-500 uppercase font-semibold">Model</p>
+                        <p className="text-gray-700">{setup.model}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500 uppercase font-semibold">Platforms</p>
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {setup.platforms.map(platform => (
+                            <span key={platform} className="inline-block bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded">
+                              {platform}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500 uppercase font-semibold">Use Case</p>
+                        <p className="text-gray-700">{setup.useCase}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500 uppercase font-semibold">Description</p>
+                        <p className="text-gray-700 text-sm">{setup.description}</p>
+                      </div>
+                      <div className="pt-4 border-t border-gray-200">
+                        <p className={`text-sm ${colors.text} font-semibold`}>💡 "{setup.testimonial}"</p>
+                      </div>
+                    </div>
+                  </Card>
+                );
+              })
+            ) : (
+              <div className="col-span-full text-center py-12">
+                <p className="text-gray-600 text-lg">No setups match your filters. Try adjusting your selection!</p>
               </div>
-              <div className="space-y-3">
-                <div>
-                  <p className="text-xs text-gray-500 uppercase font-semibold">Model</p>
-                  <p className="text-gray-700">Llama3 (8B)</p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500 uppercase font-semibold">Setup</p>
-                  <p className="text-gray-700">Discord + GitHub Integration</p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500 uppercase font-semibold">Use Case</p>
-                  <p className="text-gray-700">Code reviews, debugging, and documentation generation</p>
-                </div>
-                <div className="pt-4 border-t border-gray-200">
-                  <p className="text-sm text-orange-600 font-semibold">💡 "Saves me hours on code reviews!"</p>
-                </div>
-              </div>
-            </Card>
-
-            {/* Setup 2: Productivity Master */}
-            <Card className="p-6 border-2 border-blue-200 hover:shadow-xl transition-all hover:border-blue-400 hover:scale-105">
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900">Productivity Master</h3>
-                  <p className="text-sm text-gray-500">by @TimeKeeper</p>
-                </div>
-                <span className="text-2xl">⚡</span>
-              </div>
-              <div className="space-y-3">
-                <div>
-                  <p className="text-xs text-gray-500 uppercase font-semibold">Model</p>
-                  <p className="text-gray-700">TinyLlama (optimized)</p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500 uppercase font-semibold">Setup</p>
-                  <p className="text-gray-700">Telegram + Slack + Calendar API</p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500 uppercase font-semibold">Use Case</p>
-                  <p className="text-gray-700">Task management, meeting summaries, and scheduling</p>
-                </div>
-                <div className="pt-4 border-t border-gray-200">
-                  <p className="text-sm text-blue-600 font-semibold">💡 "My personal assistant that never sleeps!"</p>
-                </div>
-              </div>
-            </Card>
-
-            {/* Setup 3: Content Creator */}
-            <Card className="p-6 border-2 border-purple-200 hover:shadow-xl transition-all hover:border-purple-400 hover:scale-105">
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900">Content Creator</h3>
-                  <p className="text-sm text-gray-500">by @CreativeFlow</p>
-                </div>
-                <span className="text-2xl">✍️</span>
-              </div>
-              <div className="space-y-3">
-                <div>
-                  <p className="text-xs text-gray-500 uppercase font-semibold">Model</p>
-                  <p className="text-gray-700">Mistral (7B)</p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500 uppercase font-semibold">Setup</p>
-                  <p className="text-gray-700">WhatsApp + Discord + Voice</p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500 uppercase font-semibold">Use Case</p>
-                  <p className="text-gray-700">Brainstorming, writing assistance, and content ideation</p>
-                </div>
-                <div className="pt-4 border-t border-gray-200">
-                  <p className="text-sm text-purple-600 font-semibold">💡 "My creative muse in my pocket!"</p>
-                </div>
-              </div>
-            </Card>
-
-            {/* Setup 4: Researcher */}
-            <Card className="p-6 border-2 border-green-200 hover:shadow-xl transition-all hover:border-green-400 hover:scale-105">
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900">Research Assistant</h3>
-                  <p className="text-sm text-gray-500">by @DataDiver</p>
-                </div>
-                <span className="text-2xl">🔬</span>
-              </div>
-              <div className="space-y-3">
-                <div>
-                  <p className="text-xs text-gray-500 uppercase font-semibold">Model</p>
-                  <p className="text-gray-700">Llama3 + RAG (local documents)</p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500 uppercase font-semibold">Setup</p>
-                  <p className="text-gray-700">Telegram + Local Knowledge Base</p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500 uppercase font-semibold">Use Case</p>
-                  <p className="text-gray-700">Research synthesis, paper analysis, and knowledge extraction</p>
-                </div>
-                <div className="pt-4 border-t border-gray-200">
-                  <p className="text-sm text-green-600 font-semibold">💡 "My research partner that knows my papers!"</p>
-                </div>
-              </div>
-            </Card>
-
-            {/* Setup 5: Language Learner */}
-            <Card className="p-6 border-2 border-red-200 hover:shadow-xl transition-all hover:border-red-400 hover:scale-105">
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900">Language Tutor</h3>
-                  <p className="text-sm text-gray-500">by @PolyglotPro</p>
-                </div>
-                <span className="text-2xl">🌍</span>
-              </div>
-              <div className="space-y-3">
-                <div>
-                  <p className="text-xs text-gray-500 uppercase font-semibold">Model</p>
-                  <p className="text-gray-700">Llama3 (multilingual)</p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500 uppercase font-semibold">Setup</p>
-                  <p className="text-gray-700">Discord + Voice + Translation</p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500 uppercase font-semibold">Use Case</p>
-                  <p className="text-gray-700">Language practice, translation, and cultural insights</p>
-                </div>
-                <div className="pt-4 border-t border-gray-200">
-                  <p className="text-sm text-red-600 font-semibold">💡 "Learning languages has never been this fun!"</p>
-                </div>
-              </div>
-            </Card>
-
-            {/* Setup 6: Home Automation */}
-            <Card className="p-6 border-2 border-yellow-200 hover:shadow-xl transition-all hover:border-yellow-400 hover:scale-105">
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900">Smart Home Hub</h3>
-                  <p className="text-sm text-gray-500">by @TechNinja</p>
-                </div>
-                <span className="text-2xl">🏠</span>
-              </div>
-              <div className="space-y-3">
-                <div>
-                  <p className="text-xs text-gray-500 uppercase font-semibold">Model</p>
-                  <p className="text-gray-700">TinyLlama (low latency)</p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500 uppercase font-semibold">Setup</p>
-                  <p className="text-gray-700">Telegram + Home Assistant Integration</p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500 uppercase font-semibold">Use Case</p>
-                  <p className="text-gray-700">Voice control, automation routines, and device management</p>
-                </div>
-                <div className="pt-4 border-t border-gray-200">
-                  <p className="text-sm text-yellow-600 font-semibold">💡 "My home listens only to me!"</p>
-                </div>
-              </div>
-            </Card>
+            )}
           </div>
 
           {/* Share Your Setup CTA */}
