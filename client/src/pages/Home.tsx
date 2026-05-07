@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CheckCircle, Download, Settings, MessageSquare, Zap, Shield, X } from "lucide-react";
+import { CheckCircle, Download, Settings, MessageSquare, Zap, Shield, X, Search } from "lucide-react";
 import { useState, useMemo } from "react";
 
 const COMMUNITY_SETUPS = [
@@ -93,6 +93,7 @@ const COLOR_MAP = {
 };
 
 export default function Home() {
+  const [searchQuery, setSearchQuery] = useState("");
   const [selectedModels, setSelectedModels] = useState<string[]>([]);
   const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
   const [selectedUseCases, setSelectedUseCases] = useState<string[]>([]);
@@ -102,9 +103,17 @@ export default function Home() {
       const modelMatch = selectedModels.length === 0 || selectedModels.includes(setup.model);
       const platformMatch = selectedPlatforms.length === 0 || selectedPlatforms.some(p => setup.platforms.includes(p));
       const useCaseMatch = selectedUseCases.length === 0 || selectedUseCases.includes(setup.useCase);
-      return modelMatch && platformMatch && useCaseMatch;
+      
+      const searchLower = searchQuery.toLowerCase();
+      const searchMatch = searchQuery === "" || 
+        setup.name.toLowerCase().includes(searchLower) ||
+        setup.description.toLowerCase().includes(searchLower) ||
+        setup.author.toLowerCase().includes(searchLower) ||
+        setup.testimonial.toLowerCase().includes(searchLower);
+      
+      return modelMatch && platformMatch && useCaseMatch && searchMatch;
     });
-  }, [selectedModels, selectedPlatforms, selectedUseCases]);
+  }, [selectedModels, selectedPlatforms, selectedUseCases, searchQuery]);
 
   const toggleFilter = (filter: string, type: "model" | "platform" | "useCase") => {
     if (type === "model") {
@@ -117,6 +126,7 @@ export default function Home() {
   };
 
   const clearAllFilters = () => {
+    setSearchQuery("");
     setSelectedModels([]);
     setSelectedPlatforms([]);
     setSelectedUseCases([]);
@@ -438,6 +448,20 @@ export default function Home() {
             Discover how other users have customized their Lobster Assistant. Get inspired and find the perfect setup for your needs.
           </p>
 
+          {/* Search Bar */}
+          <div className="mb-8">
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search by name, description, or author..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-12 pr-4 py-3 rounded-lg border-2 border-gray-300 focus:border-orange-600 focus:outline-none transition-colors text-gray-900 placeholder-gray-500"
+              />
+            </div>
+          </div>
+
           {/* Filter Section */}
           <div className="mb-12 space-y-6">
             {/* Model Filters */}
@@ -501,7 +525,7 @@ export default function Home() {
             </div>
 
             {/* Clear Filters Button */}
-            {(selectedModels.length > 0 || selectedPlatforms.length > 0 || selectedUseCases.length > 0) && (
+            {(searchQuery !== "" || selectedModels.length > 0 || selectedPlatforms.length > 0 || selectedUseCases.length > 0) && (
               <div className="flex items-center justify-between pt-4 border-t border-gray-300">
                 <p className="text-sm text-gray-600">
                   Showing {filteredSetups.length} of {COMMUNITY_SETUPS.length} setups
