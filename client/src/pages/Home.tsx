@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CheckCircle, Download, Settings, MessageSquare, Zap, Shield, X, Search } from "lucide-react";
+import { CheckCircle, Download, Settings, MessageSquare, Zap, Shield, X, Search, ChevronDown } from "lucide-react";
 import { useState, useMemo } from "react";
 
 const COMMUNITY_SETUPS = [
@@ -157,9 +157,11 @@ export default function Home() {
   const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
   const [selectedUseCases, setSelectedUseCases] = useState<string[]>([]);
   const [setupRatings, setSetupRatings] = useState<Record<number, number>>({});
+  const [sortBy, setSortBy] = useState<"rating" | "popularity" | "recent">("rating");
+  const [showSortMenu, setShowSortMenu] = useState(false);
 
   const filteredSetups = useMemo(() => {
-    return COMMUNITY_SETUPS.filter(setup => {
+    let filtered = COMMUNITY_SETUPS.filter(setup => {
       const modelMatch = selectedModels.length === 0 || selectedModels.includes(setup.model);
       const platformMatch = selectedPlatforms.length === 0 || selectedPlatforms.some(p => setup.platforms.includes(p));
       const useCaseMatch = selectedUseCases.length === 0 || selectedUseCases.includes(setup.useCase);
@@ -173,7 +175,19 @@ export default function Home() {
       
       return modelMatch && platformMatch && useCaseMatch && searchMatch;
     });
-  }, [selectedModels, selectedPlatforms, selectedUseCases, searchQuery]);
+
+    const sorted = [...filtered].sort((a, b) => {
+      if (sortBy === "rating") {
+        return b.rating - a.rating;
+      } else if (sortBy === "popularity") {
+        return b.popularity - a.popularity;
+      } else {
+        return b.id - a.id;
+      }
+    });
+
+    return sorted;
+  }, [selectedModels, selectedPlatforms, selectedUseCases, searchQuery, sortBy]);
 
   const toggleFilter = (filter: string, type: "model" | "platform" | "useCase") => {
     if (type === "model") {
@@ -589,6 +603,54 @@ export default function Home() {
                   </button>
                 ))}
               </div>
+            </div>
+
+            {/* Sort Dropdown */}
+            <div className="relative">
+              <button
+                onClick={() => setShowSortMenu(!showSortMenu)}
+                className="flex items-center gap-2 px-4 py-2 bg-orange-100 text-orange-700 rounded-lg hover:bg-orange-200 transition-all font-semibold border-2 border-orange-300"
+              >
+                <span>Sort by: {sortBy === "rating" ? "Best Rated" : sortBy === "popularity" ? "Most Popular" : "Most Recent"}</span>
+                <ChevronDown className={`w-4 h-4 transition-transform ${showSortMenu ? "rotate-180" : ""}`} />
+              </button>
+              {showSortMenu && (
+                <div className="absolute top-full left-0 mt-2 bg-white border-2 border-orange-300 rounded-lg shadow-lg z-10 min-w-max">
+                  <button
+                    onClick={() => {
+                      setSortBy("rating");
+                      setShowSortMenu(false);
+                    }}
+                    className={`block w-full text-left px-4 py-2 hover:bg-orange-50 transition-all ${
+                      sortBy === "rating" ? "bg-orange-100 font-bold text-orange-700" : "text-gray-700"
+                    }`}
+                  >
+                    ⭐ Best Rated
+                  </button>
+                  <button
+                    onClick={() => {
+                      setSortBy("popularity");
+                      setShowSortMenu(false);
+                    }}
+                    className={`block w-full text-left px-4 py-2 hover:bg-orange-50 transition-all ${
+                      sortBy === "popularity" ? "bg-orange-100 font-bold text-orange-700" : "text-gray-700"
+                    }`}
+                  >
+                    🔥 Most Popular
+                  </button>
+                  <button
+                    onClick={() => {
+                      setSortBy("recent");
+                      setShowSortMenu(false);
+                    }}
+                    className={`block w-full text-left px-4 py-2 hover:bg-orange-50 transition-all ${
+                      sortBy === "recent" ? "bg-orange-100 font-bold text-orange-700" : "text-gray-700"
+                    }`}
+                  >
+                    ✨ Most Recent
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* Clear Filters Button */}
