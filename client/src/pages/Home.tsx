@@ -15,7 +15,9 @@ const COMMUNITY_SETUPS = [
     useCase: "Development",
     description: "Code reviews, debugging, and documentation generation",
     testimonial: "Saves me hours on code reviews!",
-    color: "orange"
+    color: "orange",
+    trending: true,
+    popularity: 1250
   },
   {
     id: 2,
@@ -27,7 +29,9 @@ const COMMUNITY_SETUPS = [
     useCase: "Productivity",
     description: "Task management, meeting summaries, and scheduling",
     testimonial: "My personal assistant that never sleeps!",
-    color: "blue"
+    color: "blue",
+    trending: true,
+    popularity: 980
   },
   {
     id: 3,
@@ -39,7 +43,9 @@ const COMMUNITY_SETUPS = [
     useCase: "Content",
     description: "Brainstorming, writing assistance, and content ideation",
     testimonial: "My creative muse in my pocket!",
-    color: "purple"
+    color: "purple",
+    trending: false,
+    popularity: 645
   },
   {
     id: 4,
@@ -51,7 +57,9 @@ const COMMUNITY_SETUPS = [
     useCase: "Research",
     description: "Research synthesis, paper analysis, and knowledge extraction",
     testimonial: "My research partner that knows my papers!",
-    color: "green"
+    color: "green",
+    trending: false,
+    popularity: 512
   },
   {
     id: 5,
@@ -63,7 +71,9 @@ const COMMUNITY_SETUPS = [
     useCase: "Learning",
     description: "Language practice, translation, and cultural insights",
     testimonial: "Learning languages has never been this fun!",
-    color: "red"
+    color: "red",
+    trending: true,
+    popularity: 1100
   },
   {
     id: 6,
@@ -75,7 +85,9 @@ const COMMUNITY_SETUPS = [
     useCase: "Automation",
     description: "Voice control, automation routines, and device management",
     testimonial: "My home listens only to me!",
-    color: "yellow"
+    color: "yellow",
+    trending: false,
+    popularity: 428
   }
 ];
 
@@ -549,8 +561,14 @@ export default function Home() {
                 return (
                   <Card
                     key={setup.id}
-                    className={`p-6 border-2 ${colors.border} hover:shadow-xl transition-all ${colors.hover} hover:scale-105`}
+                    className={`p-6 border-2 ${colors.border} hover:shadow-xl transition-all ${colors.hover} hover:scale-105 relative`}
                   >
+                    {setup.trending && (
+                      <div className="absolute -top-3 -right-3 bg-gradient-to-r from-red-500 to-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg animate-pulse flex items-center gap-1">
+                        <span>🔥</span>
+                        <span>Trending</span>
+                      </div>
+                    )}
                     <div className="flex items-start justify-between mb-4">
                       <div>
                         <h3 className="text-xl font-bold text-gray-900">{setup.name}</h3>
