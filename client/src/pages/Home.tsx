@@ -574,10 +574,10 @@ export default function Home() {
       {/* Community Setups Section with Filters */}
       <section className="py-20 px-4 bg-gradient-to-b from-white to-orange-50">
         <div className="container max-w-6xl mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-4 text-gray-900">
+          <h2 className="text-4xl font-bold text-center mb-4 text-gray-900 animate-fade-in-down">
             Community Setups
           </h2>
-          <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+          <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto animate-fade-in-down">
             Discover how other users have customized their Lobster Assistant. Get inspired and find the perfect setup for your needs.
           </p>
 
@@ -585,7 +585,7 @@ export default function Home() {
           <div className="mb-8 flex justify-end">
             <button
               onClick={() => setShowModal(true)}
-              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg hover:shadow-lg transition-all font-bold hover:scale-105"
+              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg hover:shadow-lg transition-all font-bold hover:scale-105 animate-slide-in-left"
             >
               <Plus className="w-5 h-5" />
               Share Your Setup
@@ -593,7 +593,7 @@ export default function Home() {
           </div>
 
           {/* Search Bar */}
-          <div className="mb-8">
+          <div className="mb-8 animate-fade-in-up">
             <div className="relative">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
@@ -736,12 +736,13 @@ export default function Home() {
           {/* Setups Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredSetups.length > 0 ? (
-              filteredSetups.map(setup => {
+              filteredSetups.map((setup, index) => {
                 const colors = COLOR_MAP[setup.color as keyof typeof COLOR_MAP];
+                const staggerClass = `card-stagger-${(index % 6) + 1}`;
                 return (
                   <Card
                     key={setup.id}
-                    className={`p-6 border-2 ${colors.border} hover:shadow-xl transition-all ${colors.hover} hover:scale-105 relative`}
+                    className={`p-6 border-2 ${colors.border} hover:shadow-xl transition-all ${colors.hover} hover:scale-105 relative ${staggerClass}`}
                   >
                     {setup.trending && (
                       <div className="absolute -top-3 -right-3 bg-gradient-to-r from-red-500 to-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg animate-pulse flex items-center gap-1">
@@ -909,8 +910,8 @@ export default function Home() {
 
       {/* Submit Setup Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto p-8 bg-white">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 animate-fade-in-scale">
+          <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto p-8 bg-white animate-fade-in-scale">
             {submitSuccess ? (
               <div className="text-center py-12">
                 <div className="text-6xl mb-4">✨🦞✨</div>
