@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CheckCircle, Download, Settings, MessageSquare, Zap, Shield, X, Search, ChevronDown } from "lucide-react";
+import { CheckCircle, Download, Settings, MessageSquare, Zap, Shield, X, Search, ChevronDown, Plus, AlertCircle } from "lucide-react";
 import { useState, useMemo } from "react";
 
 const COMMUNITY_SETUPS = [
@@ -159,6 +159,18 @@ export default function Home() {
   const [setupRatings, setSetupRatings] = useState<Record<number, number>>({});
   const [sortBy, setSortBy] = useState<"rating" | "popularity" | "recent">("rating");
   const [showSortMenu, setShowSortMenu] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    author: "",
+    model: "Llama3",
+    platforms: [] as string[],
+    useCase: "Development",
+    description: "",
+    testimonial: ""
+  });
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  const [submitSuccess, setSubmitSuccess] = useState(false);
 
   const filteredSetups = useMemo(() => {
     let filtered = COMMUNITY_SETUPS.filter(setup => {
@@ -210,6 +222,46 @@ export default function Home() {
     setSetupRatings(prev => ({
       ...prev,
       [setupId]: newRating
+    }));
+  };
+
+  const validateForm = () => {
+    const errors: Record<string, string> = {};
+    if (!formData.name.trim()) errors.name = "Setup name is required";
+    if (!formData.author.trim()) errors.author = "Author name is required";
+    if (!formData.description.trim()) errors.description = "Description is required";
+    if (formData.platforms.length === 0) errors.platforms = "Select at least one platform";
+    if (!formData.testimonial.trim()) errors.testimonial = "Testimonial is required";
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleSubmitSetup = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (validateForm()) {
+      setSubmitSuccess(true);
+      setTimeout(() => {
+        setShowModal(false);
+        setSubmitSuccess(false);
+        setFormData({
+          name: "",
+          author: "",
+          model: "Llama3",
+          platforms: [],
+          useCase: "Development",
+          description: "",
+          testimonial: ""
+        });
+      }, 2000);
+    }
+  };
+
+  const togglePlatform = (platform: string) => {
+    setFormData(prev => ({
+      ...prev,
+      platforms: prev.platforms.includes(platform)
+        ? prev.platforms.filter(p => p !== platform)
+        : [...prev.platforms, platform]
     }));
   };
 
@@ -529,6 +581,17 @@ export default function Home() {
             Discover how other users have customized their Lobster Assistant. Get inspired and find the perfect setup for your needs.
           </p>
 
+          {/* Submit Setup Button */}
+          <div className="mb-8 flex justify-end">
+            <button
+              onClick={() => setShowModal(true)}
+              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg hover:shadow-lg transition-all font-bold hover:scale-105"
+            >
+              <Plus className="w-5 h-5" />
+              Share Your Setup
+            </button>
+          </div>
+
           {/* Search Bar */}
           <div className="mb-8">
             <div className="relative">
@@ -843,6 +906,179 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* Submit Setup Modal */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto p-8 bg-white">
+            {submitSuccess ? (
+              <div className="text-center py-12">
+                <div className="text-6xl mb-4">✨🦞✨</div>
+                <h3 className="text-2xl font-bold text-green-600 mb-2">Setup Submitted!</h3>
+                <p className="text-gray-600">Thank you for sharing your setup with the community!</p>
+              </div>
+            ) : (
+              <>
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-3xl font-bold text-gray-900">Share Your Setup 🦞</h2>
+                  <button
+                    onClick={() => setShowModal(false)}
+                    className="text-gray-500 hover:text-gray-700 transition"
+                  >
+                    <X className="w-6 h-6" />
+                  </button>
+                </div>
+
+                <form onSubmit={handleSubmitSetup} className="space-y-6">
+                  {/* Setup Name */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">Setup Name *</label>
+                    <input
+                      type="text"
+                      value={formData.name}
+                      onChange={(e) => setFormData({...formData, name: e.target.value})}
+                      placeholder="e.g., My Awesome Dev Setup"
+                      className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-orange-600 focus:outline-none transition-colors"
+                    />
+                    {formErrors.name && (
+                      <div className="flex items-center gap-2 mt-1 text-red-600 text-sm">
+                        <AlertCircle className="w-4 h-4" />
+                        {formErrors.name}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Author Name */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">Your Name/Handle *</label>
+                    <input
+                      type="text"
+                      value={formData.author}
+                      onChange={(e) => setFormData({...formData, author: e.target.value})}
+                      placeholder="e.g., @YourHandle"
+                      className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-orange-600 focus:outline-none transition-colors"
+                    />
+                    {formErrors.author && (
+                      <div className="flex items-center gap-2 mt-1 text-red-600 text-sm">
+                        <AlertCircle className="w-4 h-4" />
+                        {formErrors.author}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Model Selection */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">LLM Model</label>
+                    <select
+                      value={formData.model}
+                      onChange={(e) => setFormData({...formData, model: e.target.value})}
+                      className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-orange-600 focus:outline-none transition-colors"
+                    >
+                      {MODELS.map(model => (
+                        <option key={model} value={model}>{model}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Platforms */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">Platforms *</label>
+                    <div className="grid grid-cols-2 gap-3">
+                      {PLATFORMS.map(platform => (
+                        <button
+                          key={platform}
+                          type="button"
+                          onClick={() => togglePlatform(platform)}
+                          className={`px-4 py-2 rounded-lg font-semibold transition-all ${
+                            formData.platforms.includes(platform)
+                              ? "bg-blue-600 text-white shadow-lg"
+                              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                          }`}
+                        >
+                          {platform}
+                        </button>
+                      ))}
+                    </div>
+                    {formErrors.platforms && (
+                      <div className="flex items-center gap-2 mt-1 text-red-600 text-sm">
+                        <AlertCircle className="w-4 h-4" />
+                        {formErrors.platforms}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Use Case */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">Primary Use Case</label>
+                    <select
+                      value={formData.useCase}
+                      onChange={(e) => setFormData({...formData, useCase: e.target.value})}
+                      className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-orange-600 focus:outline-none transition-colors"
+                    >
+                      {USE_CASES.map(useCase => (
+                        <option key={useCase} value={useCase}>{useCase}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Description */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">Description *</label>
+                    <textarea
+                      value={formData.description}
+                      onChange={(e) => setFormData({...formData, description: e.target.value})}
+                      placeholder="Describe what makes your setup special..."
+                      rows={3}
+                      className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-orange-600 focus:outline-none transition-colors resize-none"
+                    />
+                    {formErrors.description && (
+                      <div className="flex items-center gap-2 mt-1 text-red-600 text-sm">
+                        <AlertCircle className="w-4 h-4" />
+                        {formErrors.description}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Testimonial */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">Your Testimonial *</label>
+                    <input
+                      type="text"
+                      value={formData.testimonial}
+                      onChange={(e) => setFormData({...formData, testimonial: e.target.value})}
+                      placeholder="e.g., This setup saves me hours every day!"
+                      className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-orange-600 focus:outline-none transition-colors"
+                    />
+                    {formErrors.testimonial && (
+                      <div className="flex items-center gap-2 mt-1 text-red-600 text-sm">
+                        <AlertCircle className="w-4 h-4" />
+                        {formErrors.testimonial}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Submit Button */}
+                  <div className="flex gap-4 pt-4">
+                    <button
+                      type="submit"
+                      className="flex-1 px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg hover:shadow-lg transition-all font-bold"
+                    >
+                      Submit Setup 🦞
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowModal(false)}
+                      className="flex-1 px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all font-semibold"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              </>
+            )}
+          </Card>
+        </div>
+      )}
     </div>
   );
 }
