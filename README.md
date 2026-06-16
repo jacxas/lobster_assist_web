@@ -4,6 +4,8 @@
 
 Lobster Assistant is a private, open-source AI assistant that runs completely on your devices. No cloud, no tracking, no subscriptions. Just you and your AI, connected through your favorite chat apps.
 
+---
+
 ## ✨ Features
 
 - **🔒 100% Private**: All data stays on your device. No cloud uploads.
@@ -14,55 +16,146 @@ Lobster Assistant is a private, open-source AI assistant that runs completely on
 - **🎯 Always On**: Runs as a background service, ready to help 24/7.
 - **💻 Open Source**: MIT License. Fork, modify, contribute.
 
-## 🚀 Quick Start
+---
 
-### Prerequisites
-- Node.js 18+
-- Ollama (for local LLM)
-- npm (o pnpm — ver nota abajo)
+## 🚀 Installation
 
-> **Nota sobre pnpm**: Si al ejecutar `pnpm` ves un error como *"pnpm no se reconoce como un comando"*, usa `npm` directamente (ya viene con Node.js). O bien instala pnpm con: `npm install -g pnpm`
+> **¿Eres experto o novato?** Elige tu camino:
+>
+> - 🟢 [Soy nuevo en esto → Guía paso a paso para novatos](#-para-novatos-guía-completa-paso-a-paso)
+> - 🔵 [Ya sé lo que hago → Instalación rápida](#-para-expertos-instalación-rápida)
 
-### Installation (5 minutes)
+---
 
-**Opción A — con npm (recomendado):**
+## 🔵 Para expertos — Instalación rápida
+
+> Asume que ya tienes instalado: **Git**, **Node.js 18+** y **Ollama**.
 
 ```bash
-# 1. Clonar el repositorio
 git clone https://github.com/jacxas/lobster_assist_web.git
 cd lobster_assist_web
-
-# 2. Instalar dependencias
 npm install
-
-# 3. Ejecutar el asistente de configuración
 node src/bot/setup.js
-
-# 4. Iniciar el asistente
 npm start
 ```
 
-**Opción B — con pnpm (si lo prefieres):**
+That's it! 🦞
 
-```bash
-# Primero instala pnpm si no lo tienes
-npm install -g pnpm
+---
 
-# 1. Clonar el repositorio
-git clone https://github.com/jacxas/lobster_assist_web.git
-cd lobster_assist_web
+## 🟢 Para novatos — Guía completa paso a paso
 
-# 2. Instalar dependencias
-pnpm install
+Si nunca instalaste Node.js, Git u Ollama, empezá por acá. Sigue cada paso en orden.
 
-# 3. Ejecutar el asistente de configuración
-node src/bot/setup.js
+### Paso 1 — Instalar Git
 
-# 4. Iniciar el asistente
-pnpm start
+Git es el programa que te permite descargar este proyecto desde GitHub.
+
+1. Abrí tu navegador y entrá a: **https://git-scm.com/download/win**
+2. Descargá el instalador (el botón grande que dice *"Click here to download"*)
+3. Ejecutá el archivo `.exe` descargado
+4. En el instalador: presioná **Next** en todas las pantallas → **Install** → **Finish**
+5. **Cerrá la ventana del CMD si la tenés abierta**
+
+✅ Para verificar que quedó bien, abrí un CMD nuevo y escribí:
+```cmd
+git --version
+```
+Deberías ver algo como: `git version 2.45.0`
+
+---
+
+### Paso 2 — Instalar Node.js
+
+Node.js es el motor que hace funcionar el asistente.
+
+1. Entrá a: **https://nodejs.org**
+2. Descargá la versión **LTS** (el botón verde de la izquierda, es la más estable)
+3. Ejecutá el archivo `.msi` descargado
+4. En el instalador: presioná **Next** en todas las pantallas → **Install** → **Finish**
+5. **Cerrá el CMD y volvé a abrirlo**
+
+✅ Para verificar, abrí un CMD nuevo y escribí:
+```cmd
+node --version
+npm --version
+```
+Deberías ver dos números de versión. Si los ves, estás listo.
+
+---
+
+### Paso 3 — Instalar Ollama
+
+Ollama es el programa que corre la inteligencia artificial en tu computadora, sin internet.
+
+1. Entrá a: **https://ollama.ai/download**
+2. Descargá el instalador para Windows
+3. Ejecutá el instalador y seguí los pasos
+4. Una vez instalado, descargá el modelo de IA (esto puede tardar unos minutos):
+
+```cmd
+ollama pull llama3
 ```
 
-That's it! 🦞
+✅ Para verificar:
+```cmd
+ollama --version
+```
+
+---
+
+### Paso 4 — Descargar el asistente
+
+Ahora sí, con todo instalado, abrí el CMD y ejecutá **estos comandos de a uno**:
+
+```cmd
+git clone https://github.com/jacxas/lobster_assist_web.git
+```
+```cmd
+cd lobster_assist_web
+```
+```cmd
+npm install
+```
+
+> ⏳ `npm install` puede tardar 1-2 minutos mientras descarga las dependencias. Es normal.
+
+---
+
+### Paso 5 — Configurar el asistente
+
+```cmd
+node src/bot/setup.js
+```
+
+Este comando abre un asistente de configuración que te va a preguntar qué plataformas querés usar (WhatsApp, Discord, Telegram, etc.) y los tokens necesarios.
+
+---
+
+### Paso 6 — Iniciar el asistente
+
+```cmd
+npm start
+```
+
+🦞 **¡Listo! Tu asistente está corriendo.**
+
+---
+
+### ❓ Errores comunes
+
+| Error | Causa | Solución |
+|-------|-------|----------|
+| `'git' no se reconoce` | Git no está instalado | Completá el Paso 1 |
+| `'npm' no se reconoce` | Node.js no está instalado | Completá el Paso 2 |
+| `'node' no se reconoce` | Node.js no está instalado | Completá el Paso 2 |
+| `'ollama' no se reconoce` | Ollama no está instalado | Completá el Paso 3 |
+| `El sistema no puede encontrar la ruta` | No clonaste el repo primero | Completá el Paso 4 |
+| `"#" no se reconoce` | Copiaste comentarios al CMD | Copiá solo los comandos, sin las líneas con `#` |
+
+> ⚠️ **Importante**: después de instalar Git o Node.js, siempre **cerrá y volvé a abrir el CMD** antes de continuar. Si no lo hacés, Windows no detecta los programas recién instalados.
+
+---
 
 ## 📚 Documentation
 
@@ -142,16 +235,9 @@ We welcome contributions! See [CONTRIBUTING.md](./CONTRIBUTING.md) for guideline
 ### Development
 
 ```bash
-# Install dev dependencies
 npm install
-
-# Run tests
 npm test
-
-# Build for production
 npm run build
-
-# Format code
 npm run format
 ```
 
@@ -161,8 +247,6 @@ Check out how others have customized Lobster:
 - **Developer's Dream**: Llama3 + Discord + VS Code integration
 - **Productivity Master**: Mistral + Slack + Calendar sync
 - **Content Creator**: TinyLlama + Telegram + Auto-publishing
-
-[View more community setups →](https://lobster-assistant.dev/community)
 
 ## 🗺️ Roadmap
 
