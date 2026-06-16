@@ -19,22 +19,46 @@ Lobster Assistant is a private, open-source AI assistant that runs completely on
 ### Prerequisites
 - Node.js 18+
 - Ollama (for local LLM)
-- npm or pnpm
+- npm (o pnpm — ver nota abajo)
+
+> **Nota sobre pnpm**: Si al ejecutar `pnpm` ves un error como *"pnpm no se reconoce como un comando"*, usa `npm` directamente (ya viene con Node.js). O bien instala pnpm con: `npm install -g pnpm`
 
 ### Installation (5 minutes)
 
+**Opción A — con npm (recomendado):**
+
 ```bash
-# 1. Clone the repository
-git clone https://github.com/jacxas/lobster-assistant.git
-cd lobster-assistant
+# 1. Clonar el repositorio
+git clone https://github.com/jacxas/lobster_assist_web.git
+cd lobster_assist_web
 
-# 2. Install dependencies
-pnpm install
+# 2. Instalar dependencias
+npm install
 
-# 3. Run the setup wizard
+# 3. Ejecutar el asistente de configuración
 node src/bot/setup.js
 
-# 4. Start the assistant
+# 4. Iniciar el asistente
+npm start
+```
+
+**Opción B — con pnpm (si lo prefieres):**
+
+```bash
+# Primero instala pnpm si no lo tienes
+npm install -g pnpm
+
+# 1. Clonar el repositorio
+git clone https://github.com/jacxas/lobster_assist_web.git
+cd lobster_assist_web
+
+# 2. Instalar dependencias
+pnpm install
+
+# 3. Ejecutar el asistente de configuración
+node src/bot/setup.js
+
+# 4. Iniciar el asistente
 pnpm start
 ```
 
@@ -51,7 +75,7 @@ That's it! 🦞
 ## 🏗️ Project Structure
 
 ```
-lobster-assistant/
+lobster_assist_web/
 ├── src/
 │   ├── bot/
 │   │   ├── discord.js          # Discord connector
@@ -119,16 +143,16 @@ We welcome contributions! See [CONTRIBUTING.md](./CONTRIBUTING.md) for guideline
 
 ```bash
 # Install dev dependencies
-pnpm install --save-dev
+npm install
 
 # Run tests
-pnpm test
+npm test
 
 # Build for production
-pnpm build
+npm run build
 
 # Format code
-pnpm format
+npm run format
 ```
 
 ## 📊 Community Setups
@@ -149,8 +173,8 @@ Check out how others have customized Lobster:
 
 ## 📞 Support
 
-- **Issues**: [GitHub Issues](https://github.com/jacxas/lobster-assistant/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/jacxas/lobster-assistant/discussions)
+- **Issues**: [GitHub Issues](https://github.com/jacxas/lobster_assist_web/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/jacxas/lobster_assist_web/discussions)
 - **Discord**: [Join our community](https://discord.gg/lobster)
 - **Email**: jacxas@gmail.com
 
